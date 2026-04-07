@@ -1,49 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioCore - Controle de Medidas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <nav class="sidebar">
-            <div class="logo">BioCore</div>
-            <ul>
-                <li><a href="#" class="active">Visão Geral</a></li>
-                <li><a href="#">Histórico</a></li>
-                <li><a href="#">Configurações</a></li>
-            </ul>
-        </nav>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>BioCore</h2>
+            <nav>
+                <button onclick="showSection('dashboard')">Dashboard</button>
+                <button onclick="showSection('registro')">Novo Registro</button>
+            </nav>
+        </aside>
 
-        <main class="main-content">
-            <header>
-                <h1>Painel de Saúde Profissional</h1>
-                <div class="user-profile">Maria Clara</div>
-            </header>
-
-            <section class="stats-grid">
-                <div class="card card-accent">
-                    <h3>Último IMC</h3>
-                    <p class="value">22.5</p>
-                    <span class="status healthy">Saudável</span>
+        <main class="content">
+            <section id="dashboard">
+                <h1>Seu Progresso</h1>
+                <div class="stats-grid">
+                    <div class="card">
+                        <h3>Último IMC</h3>
+                        <p id="display-imc">--</p>
+                    </div>
+                    <div class="card">
+                        <h3>Peso Atual</h3>
+                        <p id="display-peso">0 kg</p>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Peso Atual</h3>
-                    <p class="value">68.0 <small>kg</small></p>
-                </div>
+                <ul id="historico" class="history-list">
+                    </ul>
             </section>
 
-            <section class="entry-form">
-                <h2>Registrar Nova Medição</h2>
-                <form action="/api/medidas" method="POST">
-                    <div class="input-group">
-                        <input type="number" placeholder="Peso (kg)" required>
-                        <input type="number" placeholder="Cintura (cm)">
-                        <input type="number" placeholder="Gordura (%)">
-                    </div>
-                    <button type="submit" class="btn-save">Atualizar Registro</button>
+            <section id="registro" class="hidden">
+                <h1>Registrar Medida</h1>
+                <form id="form-medidas">
+                    <input type="number" id="peso" placeholder="Peso (kg)" step="0.1" required>
+                    <input type="number" id="altura" placeholder="Altura (m)" step="0.01" required>
+                    <button type="submit">Salvar no Navegador</button>
                 </form>
             </section>
         </main>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
