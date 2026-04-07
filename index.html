@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">BioCore</div>
+            <ul>
+                <li><a href="#" class="active">Visão Geral</a></li>
+                <li><a href="#">Histórico</a></li>
+                <li><a href="#">Configurações</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>Painel de Saúde Profissional</h1>
+                <div class="user-profile">Maria Clara</div>
+            </header>
+
+            <section class="stats-grid">
+                <div class="card card-accent">
+                    <h3>Último IMC</h3>
+                    <p class="value">22.5</p>
+                    <span class="status healthy">Saudável</span>
+                </div>
+                <div class="card">
+                    <h3>Peso Atual</h3>
+                    <p class="value">68.0 <small>kg</small></p>
+                </div>
+            </section>
+
+            <section class="entry-form">
+                <h2>Registrar Nova Medição</h2>
+                <form action="/api/medidas" method="POST">
+                    <div class="input-group">
+                        <input type="number" placeholder="Peso (kg)" required>
+                        <input type="number" placeholder="Cintura (cm)">
+                        <input type="number" placeholder="Gordura (%)">
+                    </div>
+                    <button type="submit" class="btn-save">Atualizar Registro</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
