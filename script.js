@@ -1,54 +1,76 @@
-// Seleção de elementos
-const form = document.getElementById('form-medidas');
-const historicoLista = document.getElementById('historico');
+// 1. Garantir que o DOM carregou antes de buscar os elementos
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('form-medidas');
+    const displayImc = document.getElementById('display-imc');
+    const displayPeso = document.getElementById('display-peso');
+    const historicoLista = document.getElementById('historico');
 
-// Função para mudar de tela (Simulando rotas)
-function showSection(id) {
-    document.getElementById('dashboard').classList.add('hidden');
-    document.getElementById('registro').classList.add('hidden');
-    document.getElementById(id).classList.remove('hidden');
-}
+    // Função para mudar de tela
+    window.showSection = function(id) {
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('registro').classList.add('hidden');
+        const target = document.getElementById(id);
+        if (target) target.classList.remove('hidden');
+    }
 
-// Lógica de Cálculo e Armazenamento
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    // Lógica do Formulário
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-    const peso = parseFloat(document.getElementById('peso').value);
-    const altura = parseFloat(document.getElementById('altura').value);
-    
-    // O cálculo que antes era no Java:
-    const imc = (peso / (altura * altura)).toFixed(2);
+            // Pegando os valores e convertendo para número explicitamente
+            const peso = parseFloat(document.getElementById('peso').value);
+            const altura = parseFloat(document.getElementById('altura').value);
 
-    const novoRegistro = {
-        peso: peso,
-        imc: imc,
-        data: new Date().toLocaleDateString()
-    };
+            // Validação de segurança (Aspecto Ético e de Qualidade)
+            if (isNaN(peso) || isNaN(altura) || altura <= 0) {
+                alert("Por favor, insira valores válidos para peso e altura.");
+                return;
+            }
 
-    salvarRegistro(novoRegistro);
-    atualizarDashboard(novoRegistro);
-    form.reset();
-    showSection('dashboard');
+            // O CÁLCULO: IMC = peso / altura²
+            const imcCalculado = (peso / (altura * altura)).toFixed(2);
+
+            const novoRegistro = {
+                peso: peso,
+                imc: imcCalculado,
+                data: new Date().toLocaleTimeString() + " - " + new Date().toLocaleDateString()
+            };
+
+            // Salvar e atualizar a tela
+            salvarNoLocalStorage(novoRegistro);
+            renderizarTela(novoRegistro);
+            
+            form.reset();
+            showSection('dashboard');
+        });
+    }
+
+    function salvarNoLocalStorage(item) {
+        let dados = JSON.parse(localStorage.getItem('minhasMedidas')) || [];
+        dados.unshift(item); // Adiciona no início da lista
+        localStorage.setItem('minhasMedidas', JSON.stringify(dados));
+    }
+
+    function renderizarTela(ultimo = null) {
+        let dados = JSON.parse(localStorage.getItem('minhasMedidas')) || [];
+        
+        // Atualiza os cards principais com o último dado inserido
+        if (dados.length > 0) {
+            const topo = ultimo || dados[0];
+            displayImc.innerText = topo.imc;
+            displayPeso.innerText = topo.peso + " kg";
+        }
+
+        // Atualiza a lista de histórico
+        historicoLista.innerHTML = dados.map(r => `
+            <li class="history-item" style="border-bottom: 1px solid #ddd; padding: 10px;">
+                <strong>IMC: ${r.imc}</strong> | Peso: ${r.peso}kg <br>
+                <small>${r.data}</small>
+            </li>
+        `).join('');
+    }
+
+    // Inicialização
+    renderizarTela();
 });
-
-function salvarRegistro(item) {
-    let registros = JSON.parse(localStorage.getItem('medidas')) || [];
-    registros.push(item);
-    localStorage.setItem('medidas', JSON.stringify(registros));
-    renderizarHistorico();
-}
-
-function atualizarDashboard(item) {
-    document.getElementById('display-imc').innerText = item.imc;
-    document.getElementById('display-peso').innerText = item.peso + " kg";
-}
-
-function renderizarHistorico() {
-    let registros = JSON.parse(localStorage.getItem('medidas')) || [];
-    historicoLista.innerHTML = registros.map(r => `
-        <li class="history-item">Data: ${r.data} | Peso: ${r.peso}kg | <strong>IMC: ${r.imc}</strong></li>
-    `).join('');
-}
-
-// Iniciar carregando dados antigos
-renderizarHistorico();
